@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Gladiators Battle Monitor Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <h2>Настройки Gladiators Battle Monitor</h2>
+  <form id="settings-form">
+    <label>Интервал (сек, минимум 3): <input type="number" id="interval" min="3" value="5"></label><br>
+    <label>CSS‑селектор: <input type="text" id="selector" value=".task .content"></label><br>
+    <label>Текст для поиска: <input type="text" id="text" value="Подготовка к бою"></label><br>
+    <label><input type="checkbox" id="sound" checked> Включить звук</label><br>
+    <label><input type="checkbox" id="notifications" checked> Включить уведомления</label><br>
+    <button type="submit">Сохранить</button>
+  </form>
+  <script src="options.js"></script>
+</body>
+</html>
