@@ -57,12 +57,29 @@
         debugLog('Sound disabled by settings');
         return;
       }
+      // Try to play the bundled mp3 first
       const audio = new Audio(chrome.runtime.getURL('sounds/battle-start.mp3'));
-      audio.play().catch((e) => {
-        debugLog('Audio playback failed', e);
-        // Show fallback on overlay if present
-        if (overlayEl) {
-          overlayEl.textContent += ' (звук не воспроизведён)';
+      audio.play().then(() => {
+        debugLog('Played bundled sound');
+      }).catch((e) => {
+        debugLog('Bundled audio failed, falling back to Web Audio API', e);
+        // Fallback: generate a short beep using Web Audio API
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = ctx.createOscillator();
+          const gain = ctx.createGain();
+          oscillator.type = 'sine';
+          oscillator.frequency.setValueAtTime(440, ctx.currentTime); // A4 note
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          oscillator.connect(gain).connect(ctx.destination);
+          oscillator.start();
+          oscillator.stop(ctx.currentTime + 0.3);
+          debugLog('Web Audio beep played');
+        } catch (err) {
+          debugLog('Web Audio API failed', err);
+          if (overlayEl) {
+            overlayEl.textContent += ' (звук не воспроизведён)';
+          }
         }
       });
     });
